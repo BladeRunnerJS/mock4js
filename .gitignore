@@ -1,0 +1,6 @@
+npm-debug.log
+sauce_connect.log
+node_modules
+dist
+*sublime-project
+*sublime-workspace

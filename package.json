@@ -1,0 +1,48 @@
+{
+  "name": "mock4js",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "mkdirp dist && browserify src/mock4js.js -s mock4js -o dist/mock4js.js",
+    "postpublish": "publish-release --assets dist/mock4js.js --notes 'Add release notes here.'",
+    "__pretest": "npm run pretest:lint",
+    "__pretest:lint": "eslint src test",
+    "test": "npm run test:node && npm run test:browser && npm run test:saucelabs",
+    "test:node": "mocha test",
+    "test:node:debug": "mocha test -w",
+    "test:browser": "karma start",
+    "test:browser:debug": "karma start karma-debug.conf.js",
+    "test:saucelabs": "envcheck SAUCE_ACCESS_KEY && karma start karma-saucelabs.conf.js",
+    "test:performance": "node test-performance.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BladeRunnerJS/mock4js.git"
+  },
+  "author": "Gerard Moreno-Torres",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BladeRunnerJS/mock4js/issues"
+  },
+  "homepage": "https://github.com/BladeRunnerJS/mock4js#readme",
+  "devDependencies": {
+    "browserify": "^11.0.1",
+    "core-js": "^1.0.1",
+    "env-check": "^0.0.1",
+    "eslint": "^0.24.1",
+    "expectations": "^0.5.1",
+    "junit": "^0.9.5",
+    "karma": "^0.13.6",
+    "karma-browserify": "^4.2.1",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-cli": "^0.1.0",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
+    "karma-sauce-launcher": "^0.2.14",
+    "mkdirp": "^0.5.1",
+    "mocha": "^2.2.5",
+    "publish-release": "^1.0.2",
+    "sinon": "^1.15.4"
+  }
+}
