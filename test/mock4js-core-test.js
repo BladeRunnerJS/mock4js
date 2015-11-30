@@ -3,7 +3,7 @@ var Mock4JS = require('..').Mock4JS;
 var Mock4JSException = require('..').Mock4JSException;
 var expect = require('expectations');
 
-describe('Mock4JS', function() {
+describe('Mock4JS core', function() {
 	var mockObject;
 
 	function TestObject() {
@@ -24,24 +24,31 @@ describe('Mock4JS', function() {
 		mockObject = this.mock(TestObject);
 	});
 
+	it('passes verify method with args succeeeds with some args specified as anything', function() {
+		debugger;
+		mockObject.expects(this.once()).publicMethodWithArgs(this.ANYTHING, 222);
+
+		mockObject.proxy().publicMethodWithArgs("something", 222);	// fulfil the expectation
+		mockObject.verify();								// do not expect an exception
+	});
+
 	/**
 	 *	tests for mock creation
 	 */
-	it('MockCreatedWithSameInterfaceAsMockedType', function() {
+	it('creates a mock with the same interface as the mocked type', function() {
 		expect(mockObject.publicMethodWithNoArgs).toBeDefined();
 		expect(mockObject.publicMethodWithArgs).toBeDefined();
 		expect(mockObject._aPrivateMethod).toBeUndefined();
 		expect(mockObject.proxy() instanceof TestObject).toBe(true);
 	});
 
-	it('TryingToCreateMockWithUndefinedFailsWithNiceMessage', function() {
-		debugger;
+	it('fails to create a mock with undefined and fails with nice message', function() {
 		var invocation = function() { new Mock(undefined) };
 		var failMsg = executeAndGetExpectedError(invocation, "Should have failed to create Mock with TestObject because it should have been created with TestObject.prototype");
 	 	expect(failMsg).toContain("must create Mock using a class not prototype");
 	});
 
-	it('CreateMockForTypeThatHasConstructorThatFails', function() {
+	it('failts to create mock for type that has constructor', function() {
 		function TestObjectWithFailingConstructor(arg1, arg2) {
 			throw new Error("TestObjectWithFailingConstructor constructor called - threw error to simulate mandatory constructor args not being passed in");
 		}
@@ -53,28 +60,28 @@ describe('Mock4JS', function() {
 	/**
 	 *	basic tests for this.once() and methods with and without args
 	 */
-	it('VerifiesMethodWithNoArgsFailsWhenExpectationsNotMet', function() {
+	it('passes verify method with no args fails when expectation is not met', function() {
 		mockObject.expects(this.once()).publicMethodWithNoArgs();
 
 		var invocation = function() { mockObject.verify() };
 		expect(invocation).toThrow(Mock4JSException);
 	});
 
-	it('VerifiesMethodWithNoArgsSucceedsWhenExpectationsMet', function() {
+	it('passes verify method with no args succeeds when expectations met', function() {
 		mockObject.expects(this.once()).publicMethodWithNoArgs();
 
 		mockObject.proxy().publicMethodWithNoArgs();	// fulfil the expectation
 		mockObject.verify(); 					// do not expect an exception
 	});
 
-	it('VerifiesMethodWithArgsSucceedsWhenExpectedArgsMatch', function() {
+	it('passes verify method with args succeeds when expected args match', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs("ARG1", 222);
 
 		mockObject.proxy().publicMethodWithArgs("ARG1", 222);	// fulfil the expectation
 		mockObject.verify();							// do not expect an exception
 	});
 
-	it('VerifiesMethodWithArgsFailsWhenExpectedArgsDoNotMatch', function() {
+	it('passes verify method with args fail when expected args do not match', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs("ARG1", 222);
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs("SOME OTHER ARG", 222) };
@@ -84,20 +91,20 @@ describe('Mock4JS', function() {
 	/**
 	 * test this.never() invocation constraint
 	 */
-	it('PassesIfMethodCallExplicitlyNotExpectedAndIsNotCalled', function() {
+	it('passes if method explicitly not expected and is not called', function() {
 		mockObject.expects(this.never()).publicMethodWithNoArgs();
 
 		mockObject.verify();	// should pass because publicMethodWithNoArgs() was not called
 	});
 
-	it('FailsIfMethodCallExplicitlyNotExpected', function() {
+	it('fails if method call explicitly not expected', function() {
 		mockObject.expects(this.never()).publicMethodWithNoArgs();
 
 		var invocation = function() { mockObject.proxy().publicMethodWithNoArgs() };
 		expect(invocation).toThrow(Mock4JSException);
 	});
 
-	it('FailsIfMethodCallWithArgsExplicitlyNotExpected', function() {
+	it('fails if method call with args explicitly not expected', function() {
 		mockObject.expects(this.never()).publicMethodWithArgs();
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs("ARG1", 111) };
@@ -107,7 +114,7 @@ describe('Mock4JS', function() {
 	/**
 	 * test exactly() invocation constraint
 	 */
-	it('PassesIfMethodCalledExactNumberOfTimes', function() {
+	it('passes if method called exact number of times', function() {
 		mockObject.expects(this.exactly(2)).publicMethodWithNoArgs();
 
 		mockObject.proxy().publicMethodWithNoArgs();
@@ -116,7 +123,7 @@ describe('Mock4JS', function() {
 		mockObject.verify();
 	});
 
-	it('FailsIfMethodCalledLessThanExactNumberOfTimes', function() {
+	it('fails if method called less than exact number of times', function() {
 		mockObject.expects(this.exactly(2)).publicMethodWithNoArgs();
 
 		mockObject.proxy().publicMethodWithNoArgs();
@@ -125,7 +132,7 @@ describe('Mock4JS', function() {
 		var failMessage = executeAndGetExpectedError(invocation, "should get error on verify() because method called once but expected twice");
 	});
 
-	it('FailsIfMethodCalledMoreThanExactNumberOfTimes', function() {
+	it('fails if method called more than exact number of times', function() {
 		mockObject.expects(this.exactly(2)).publicMethodWithNoArgs();
 
 		mockObject.proxy().publicMethodWithNoArgs();
@@ -139,7 +146,7 @@ describe('Mock4JS', function() {
 	/**
 	 * test atLeastOnce() invocation constraint
 	 */
-	it('PassesIfMethodExpectedAtLeastOnceAndActuallyCalledOnce', function() {
+	it('passes if method expected at least once and actually called once', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithNoArgs();
 
 		mockObject.proxy().publicMethodWithNoArgs();
@@ -147,7 +154,7 @@ describe('Mock4JS', function() {
 		mockObject.verify();
 	});
 
-	it('PassesIfMethodExpectedAtLeastOnceAndActuallyCalledMoreThanOnce', function() {
+	it('passes if method expected at least once and actually called more than once', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithNoArgs();
 
 		mockObject.proxy().publicMethodWithNoArgs();
@@ -156,7 +163,7 @@ describe('Mock4JS', function() {
 		mockObject.verify();
 	});
 
-	it('FailsIfMethodExpectedAtLeastOnceAndActuallyCalledZeroTimes', function() {
+	it('fails when method expected at least once and actually called zero times', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithNoArgs();
 
 		var invocation = function() { mockObject.verify() };
@@ -166,7 +173,7 @@ describe('Mock4JS', function() {
 	/**
 	 * test method actions
 	 */
-	it('ReturnsValueWhenExpectationMatched', function() {
+	it('returns value when expectation matched', function() {
 		mockObject.expects(this.once()).publicMethodWithNoArgs().will(this.returnValue("resultFromPublicMethod"));
 		mockObject.expects(this.once()).publicMethodWithArgs("ARG1", 222).will(this.returnValue("resultFromPublicMethodWithArgs"));
 
@@ -175,7 +182,7 @@ describe('Mock4JS', function() {
 		expect("resultFromPublicMethodWithArgs").toBe(result);
 	});
 
-	it('MethodThatIsSetupToThrowException', function() {
+	it('throws exception when method is setup to do so', function() {
 		mockObject.expects(this.once()).publicMethodWithNoArgs().will(this.throwException(new Error("some exception")));
 
 		var exceptionThrown;
@@ -191,7 +198,7 @@ describe('Mock4JS', function() {
 		}
 	});
 
-	it('ReturnsMultipleValuesWhenExpectationMatched', function() {
+	it('returns multiple values when expectation matched', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs("ARG1", 222).will(this.returnValue("result1"), this.returnValue("result2"));
 		var result1 = mockObject.proxy().publicMethodWithArgs("ARG1", 222);
 		var result2 = mockObject.proxy().publicMethodWithArgs("ARG1", 222);
@@ -206,7 +213,7 @@ describe('Mock4JS', function() {
 	/**
 	 * test when expected arg is array
 	 */
-	it('VerifyPassesWhenAnExpectedArgIsArray', function() {
+	it('passes verify when an expected arg is an array', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs(["foo", "bar"]);
 
 		var result = mockObject.proxy().publicMethodWithArgs(["foo", "bar"]);
@@ -214,14 +221,14 @@ describe('Mock4JS', function() {
 		mockObject.verify();
 	});
 
-	it('VerifyFailsWhenActualArgIsArrayWithSameLengthButDifferentValues', function() {
+	it('fails verify when actual arg is array with same length but different values', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs(["foo", "bar"]);
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs(["different", "values"]) };
 		expect(invocation).toThrow(Mock4JSException);
 	});
 
-	it('VerifyFailsWhenActualArgIsArrayIsDifferentLength', function() {
+	it('fails verify when actual arg is array of different length', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs(["foo", "bar"]);
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs(["foo"]) };
@@ -231,7 +238,7 @@ describe('Mock4JS', function() {
 	/**
 	 * complex test combining multiple expectations with multiple methods with different args
 	 */
-	it('MultipleExpectations', function() {
+	it('passes when has multiple expectations', function() {
 		mockObject.expects(this.once()).publicMethodWithNoArgs().will(this.returnValue("resultFromPublicMethod"));
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs("ARG1", 222);
 		mockObject.expects(this.exactly(1)).publicMethodWithArgs("ARG2", 333);
@@ -249,7 +256,7 @@ describe('Mock4JS', function() {
 	/**
 	 * test the this.stringContains() argument constraint
 	 */
-	it('PassesWithWhenArgumentStringContainsExpectedSubstring', function() {
+	it('passes when argument string contains expected substrings', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs(this.stringContains("NI!"));
 
 		mockObject.proxy().publicMethodWithArgs("We are the knights that say NI!!!!!");
@@ -257,14 +264,14 @@ describe('Mock4JS', function() {
 		mockObject.verify();	// should pass because "NI!" is present
 	});
 
-	it('FailsWhenArgumentStringDoesntContainExpectedSubString', function() {
+	it('fails whenargument string does not contain expected substring', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs(this.stringContains("NI!"));
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs("We are the knights that say Ekke Ekke Ekke Ptang Zoo Boing!!!!!") };
 		expect(invocation).toThrow(Mock4JSException);
 	});
 
-	it('FailsWhenStringContainsDoesntReceiveAString', function() {
+	it('fails when stringContains does not receive a string', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs(this.stringContains("NI!"));
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs(666) };
@@ -275,20 +282,9 @@ describe('Mock4JS', function() {
 	});
 
 	/**
-	 * test the ANYTHING argument constraint
-	 */
-	// TODO: Doesn't work, and it depends on jsUnitExtensions
-	it('VerifiesMethodWithArgsSucceedsWithSomeArgsSpecifiedAsAnything', function() {
-		mockObject.expects(this.once()).publicMethodWithArgs(this.ANYTHING, 222);
-
-		mockObject.proxy().publicMethodWithArgs("something", 222);	// fulfil the expectation
-		mockObject.verify();								// do not expect an exception
-	});
-
-	/**
 	 * test the composite argument constraints
 	 */
-	it('ArgumentConstraintsWithNot', function() {
+	it('can constraint with not', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs(this.not("a shrubbery"), 222);
 
 		mockObject.proxy().publicMethodWithArgs("a bush", 222);			// this is ok because a bush is not a shrubbery
@@ -297,7 +293,7 @@ describe('Mock4JS', function() {
 		expect(invocation).toThrow(Mock4JSException);
 	});
 
-	it('ArgumentConstraintsWithAnd', function() {
+	it('can constaint with and', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs(this.and(this.stringContains("hello"), this.stringContains("world")), 222);
 
 		mockObject.proxy().publicMethodWithArgs("hello world", 222);			// this is ok because it contains both 'hello' and 'world'
@@ -306,7 +302,7 @@ describe('Mock4JS', function() {
 		expect(invocation).toThrow(Mock4JSException);
 	});
 
-	it('ArgumentConstraintsWithOr', function() {
+	it('can constraint with or', function() {
 		mockObject.expects(this.atLeastOnce()).publicMethodWithArgs(this.or(this.stringContains("hello"), this.stringContains("world")), 222);
 
 		mockObject.proxy().publicMethodWithArgs("hello world", 222);			// this is ok because it contains both 'hello' and 'world'
@@ -319,7 +315,7 @@ describe('Mock4JS', function() {
 	/**
 	 * test special argument values
 	 */
-	it('ExpectsUndefinedMethodArgument', function() {
+	it('can expect undefined argument', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs("foo", undefined);
 
 		mockObject.proxy().publicMethodWithArgs("foo", undefined);	// fulfil expectation
@@ -327,14 +323,14 @@ describe('Mock4JS', function() {
 		mockObject.verify();
 	});
 
-	it('ExpectsNotUndefinedMethodArgument', function() {
+	it('can expect a not-undefined metho argument', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs(this.NOT_UNDEFINED);
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs(undefined) };
 		var failMsg = executeAndGetExpectedError(invocation, "method call should have failed because arg is undefined");
 	});
 
-	it('ExpectsNullMethodArgument', function() {
+	it('can expect a null method argument', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs("foo", null);
 
 		mockObject.proxy().publicMethodWithArgs("foo", null);	// fulfil expectation
@@ -342,7 +338,7 @@ describe('Mock4JS', function() {
 		mockObject.verify();
 	});
 
-	it('ExpectsNotNullMethodArgument', function() {
+	it('can expect not a null method argument', function() {
 		mockObject.expects(this.once()).publicMethodWithArgs(this.NOT_NULL);
 
 		var invocation = function() { mockObject.proxy().publicMethodWithArgs(null) };
@@ -352,7 +348,7 @@ describe('Mock4JS', function() {
 	/**
 	 * test stubs() rather expects()
 	 */
-	it('Stubs', function() {
+	it('stubs', function() {
 		mockObject.stubs().publicMethodWithNoArgs().will(this.returnValue(123));
 		mockObject.stubs().publicMethodWithArgs("foo", 111).will(this.returnValue("FOO"));
 		mockObject.stubs().publicMethodWithArgs("bar", 111).will(this.returnValue("BAR"));
@@ -364,7 +360,7 @@ describe('Mock4JS', function() {
 		mockObject.verify();	// should not throw exception even though last stub method was not called.
 	});
 
-	it('ExpectsOverridingStubs', function() {
+	it('expects overriding stubs', function() {
 		mockObject.stubs().publicMethodWithNoArgs().will(this.returnValue(123));
 		mockObject.expects(this.once()).publicMethodWithNoArgs().will(this.returnValue(456));
 		var result = mockObject.proxy().publicMethodWithNoArgs();
@@ -372,7 +368,7 @@ describe('Mock4JS', function() {
 		expect(456).toBe(result);
 	});
 
-	it('StubsOverridingStubs', function() {
+	it('can override stubs with stubs', function() {
 		mockObject.stubs().publicMethodWithNoArgs().will(this.returnValue(123));
 		mockObject.stubs().publicMethodWithNoArgs().will(this.returnValue(456));
 
@@ -381,7 +377,17 @@ describe('Mock4JS', function() {
 		expect(456).toBe(result);
 	});
 
-	it('StubsWithMultipleReturnValues', function() {
+	it('stubs will keep performing same action', function() {
+		mockObject.stubs().publicMethodWithNoArgs().will(this.returnValue(123));
+
+		var result1 = mockObject.proxy().publicMethodWithNoArgs();
+		var result2 = mockObject.proxy().publicMethodWithNoArgs();
+
+		expect(123).toBe(result1);
+		expect(123).toBe(result2);
+	});
+
+	it('stubs will return multiple values', function() {
 		mockObject.stubs().publicMethodWithNoArgs().will(this.returnValue(111), this.returnValue(222));
 
 		var result1 = mockObject.proxy().publicMethodWithNoArgs();
@@ -392,43 +398,9 @@ describe('Mock4JS', function() {
 
 		var invocation = function() { mockObject.proxy().publicMethodWithNoArgs() };
 		var failMsg = executeAndGetExpectedError(invocation, "method call should have failed because there are no more values to return");
-		// assertThat(failMsg, this.stringContains("no more values to return"));
+		expect(failMsg).toContain("no more values to return");
 	});
 
-	it('StubsWillKeepPerformingSameAction', function() {
-		mockObject.stubs().publicMethodWithNoArgs().will(this.returnValue(123));
-
-		var result1 = mockObject.proxy().publicMethodWithNoArgs();
-		var result2 = mockObject.proxy().publicMethodWithNoArgs();
-
-		expect(123).toBe(result1);
-		expect(123).toBe(result2);
-	});
-
-	/**
-	 * testing ordering
-	 */
-	it('PassesWhenOrderMatched', function() {
-		mockObject.expects(this.once()).publicMethodWithArgs(666).will(this.returnValue(123)).id("called publicMethodWithArgs");
-		mockObject.expects(this.once()).publicMethodWithNoArgs().after("called publicMethodWithNoArgs");
-
-		var result = mockObject.proxy().publicMethodWithArgs(666);
-		mockObject.proxy().publicMethodWithNoArgs();	// should not throw exception because order is correct
-
-		expect(result).toBe(123);
-	});
-
-	/**
-	 * disabled until code written for it
-	 */
-	// function DISABLEDtestPassesWhenOrderNotMatched() {
-	// 	mockObject.expects(this.once()).publicMethodWithArgs(666).will(this.returnValue(123)).id("called publicMethodWithArgs");
-	// 	mockObject.expects(this.once()).publicMethodWithNoArgs().after("called publicMethodWithNoArgs");
-
-	// 	var invocation = function() { mockObject.proxy().publicMethodWithNoArgs() };
-	// 	var failMsg = executeAndGetExpectedError(invocation, "method call should have failed because another method was expected to be called first");
-	// 	expect(failMsg).toContain("");
-	// };
 });
 
 function executeAndGetExpectedError(functionToExecute, messageIfNoError) {

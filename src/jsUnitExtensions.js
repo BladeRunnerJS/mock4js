@@ -1,3 +1,7 @@
+function fail(msg) {
+	throw msg;
+}
+
 function assertFails(sMsg, fFunc, oExpectedFailure)
 {
 //	if (!_isMessageSupplied(arguments, 3)) return _reinvokeWithMessage(arguments);

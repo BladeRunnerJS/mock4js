@@ -10,7 +10,7 @@
     "__pretest:lint": "eslint src test",
     "test": "npm run test:node && npm run test:browser && npm run test:saucelabs",
     "test:node": "mocha test",
-    "test:node:debug": "mocha test -w",
+    "test:node:watch": "mocha test -w",
     "test:browser": "karma start",
     "test:browser:debug": "karma start karma-debug.conf.js",
     "test:saucelabs": "envcheck SAUCE_ACCESS_KEY && karma start karma-saucelabs.conf.js",
@@ -44,5 +44,8 @@
     "mocha": "^2.2.5",
     "publish-release": "^1.0.2",
     "sinon": "^1.15.4"
+  },
+  "dependencies": {
+    "get-global": "0.0.1"
   }
 }
