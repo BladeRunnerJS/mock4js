@@ -833,8 +833,6 @@ function assertMapEquals(sMsg, mExpectedMap, mActualMap, pSeenObjects)
 	}
 }
 
-module.exports = {
-	Mock4JS,
-	Mock4JSException,
-	Mock
-};
+exports.Mock4JS = Mock4JS;
+exports.Mock4JSException = Mock4JSException;
+exports.Mock = Mock;
