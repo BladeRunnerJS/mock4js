@@ -6,8 +6,6 @@
   "scripts": {
     "prepublish": "mkdirp dist && browserify src/mock4js.js -s mock4js -o dist/mock4js.js",
     "postpublish": "publish-release --assets dist/mock4js.js --notes 'Add release notes here.'",
-    "__pretest": "npm run pretest:lint",
-    "__pretest:lint": "eslint src test",
     "test": "npm run test:node && npm run test:browser && npm run test:saucelabs",
     "test:node": "mocha test",
     "test:node:watch": "mocha test -w",
