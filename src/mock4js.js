@@ -132,6 +132,13 @@ var Mock4JS = {
 		for(var i = 0; i < Mock4JS._mocksToVerify.length; i++) {
 			Mock4JS._mocksToVerify[i].verify();
 		}
+	},
+	verifyAndClearAllMocks: function() {
+		var mocksToVerify = Mock4JS._mocksToVerify;
+		Mock4JS._mocksToVerify = [];
+		for(var i=0; i<mocksToVerify.length; i++) {
+			mocksToVerify[i].verify();
+		}
 	}
 };
 
