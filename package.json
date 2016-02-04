@@ -11,8 +11,7 @@
     "test:watch": "npm run test:node -- --watch",
     "test:browser": "karma start",
     "test:debug": "karma start karma-debug.conf.js",
-    "test:saucelabs": "envcheck SAUCE_ACCESS_KEY && karma start karma-saucelabs.conf.js",
-    "test:performance": "node test-performance.js"
+    "test:saucelabs": "envcheck SAUCE_ACCESS_KEY && karma start karma-saucelabs.conf.js"
   },
   "repository": {
     "type": "git",
