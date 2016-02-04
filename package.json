@@ -25,7 +25,7 @@
   "homepage": "https://github.com/BladeRunnerJS/mock4js#readme",
   "devDependencies": {
     "browserify": "^11.0.1",
-    "core-js": "^1.0.1",
+    "core-js": "^1.2.6",
     "env-check": "^0.0.1",
     "eslint": "^0.24.1",
     "expectations": "^0.5.1",
