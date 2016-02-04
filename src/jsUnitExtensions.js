@@ -380,5 +380,5 @@ _prependBlankMessageToArgument = function(oArguments) {
 };
 
 module.exports = {
-	assertMapEquals,
+	assertMapEquals
 };
