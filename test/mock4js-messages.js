@@ -1,6 +1,4 @@
-var Mock = require('..').Mock;
-var Mock4JS = require('..').Mock4JS;
-var Mock4JSException = require('..').Mock4JSException;
+var Mock4JS = require('..');
 var expect = require('expectations');
 
 describe('Mock4JS messages', function() {
