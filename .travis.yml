@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - "5.5.0"
+sudo: false
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+env:
+  global:
+    - secure: kaCBpZAHLEZIMXzEKFH0u/kMpairsLbNoRObcenRHUzMRxSq02wMbCEEWoufEyRhBaJswORVKn1T/s1Giy1s5UDoRRBD7+xocdiDxYSw7nWEDbaXDzs8XoOnvxA6ouBHBfKhDea5g4SUnwrTW5lBee2ezZweYL2BAQ1R7uwYM4Q=
+    - secure: BF5K2Yg6p1R6U/q1cytSRPu+I28EOFXpyPJiT+Hu+IHphcX5ikNWD1sdwAZzonLvFHXMTiFyVXgauYBfw1YyIpnIvwOlP0xQf2zRTI4pIBT+RduuG7s247ByX7I2h34lgFPYZuNWqH145b7C6lH9tFgWkPGHfirKNQbCqSPPWjA=
