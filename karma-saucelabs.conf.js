@@ -44,7 +44,7 @@ module.exports = function(config) {
 
 	config.set({
 		sauceLabs: {
-			testName: 'jstd-mocha tests',
+			testName: 'mock4js tests',
 			username: 'bladerunnerjs',
 			connectOptions: {
         logfile: 'sauce_connect.log'
